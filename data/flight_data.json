@@ -1,0 +1,15 @@
+{
+  "route": {
+    "from": "上海",
+    "from_code": "SHA",
+    "to": "太原",
+    "to_code": "TYN"
+  },
+  "target_date": "2025-04-02",
+  "records": [],
+  "stats": {
+    "total_checks": 0,
+    "first_check": null,
+    "last_check": null
+  }
+}

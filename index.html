@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机票价格趋势 - 上海 → 太原</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+        .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2a2a2a;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .stat-value { font-size: 28px; font-weight: 600; color: #fff; }
+        .stat-change { font-size: 12px; margin-top: 4px; }
+        .positive { color: #4ade80; }
+        .negative { color: #f87171; }
+        .neutral { color: #888; }
+        .chart-container {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2a2a2a;
+            margin-bottom: 24px;
+        }
+        .chart-title { font-size: 16px; margin-bottom: 16px; color: #fff; }
+        .insights {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2a2a2a;
+        }
+        .insights h3 { font-size: 16px; margin-bottom: 16px; color: #fff; }
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .insight-item:last-child { border-bottom: none; }
+        .insight-icon {
+            width: 32px;
+            height: 32px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .insight-text { flex: 1; }
+        .insight-title { font-weight: 500; color: #fff; margin-bottom: 4px; }
+        .insight-desc { font-size: 13px; color: #888; }
+        .last-update { text-align: right; font-size: 12px; color: #666; margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✈️ 上海 → 太原 机票价格趋势</h1>
+        <div class="subtitle">目标日期: 2025-04-02 | 每2小时自动更新</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">当前最低价</div>
+                <div class="stat-value" id="current-price">--</div>
+                <div class="stat-change neutral" id="price-change">等待数据...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">历史最低</div>
+                <div class="stat-value" id="lowest-price">--</div>
+                <div class="stat-change neutral">建议入手价</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">平均价格</div>
+                <div class="stat-value" id="avg-price">--</div>
+                <div class="stat-change neutral">基准参考</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">数据点</div>
+                <div class="stat-value" id="data-points">0</div>
+                <div class="stat-change neutral">持续更新</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">📈 价格趋势</div>
+            <canvas id="priceChart"></canvas>
+        </div>
+        
+        <div class="insights">
+            <h3>💡 购买建议</h3>
+            <div class="insight-item">
+                <div class="insight-icon">⏰</div>
+                <div class="insight-text">
+                    <div class="insight-title">最佳购买时机</div>
+                    <div class="insight-desc" id="best-time">数据累积中...</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">📊</div>
+                <div class="insight-text">
+                    <div class="insight-title">价格波动规律</div>
+                    <div class="insight-desc" id="price-pattern">正在分析历史数据...</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">🎯</div>
+                <div class="insight-text">
+                    <div class="insight-title">目标价格</div>
+                    <div class="insight-desc" id="target-price">建议设定价格提醒</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="last-update" id="last-update">最后更新: --</div>
+    </div>
+
+    <script>
+        // GitHub raw 数据源
+        const DATA_URL = 'https://raw.githubusercontent.com/openclaw-bot/flight-tracker/main/data/flight_data.json';
+        
+        async function loadData() {
+            try {
+                const response = await fetch(DATA_URL);
+                if (!response.ok) throw new Error('Network error');
+                return await response.json();
+            } catch (e) {
+                console.log('使用模拟数据');
+                return generateMockData();
+            }
+        }
+        
+        function generateMockData() {
+            const records = [];
+            const basePrice = 600;
+            const now = new Date();
+            
+            for (let i = 14; i >= 0; i--) {
+                const date = new Date(now);
+                date.setDate(date.getDate() - i);
+                const random = Math.random() * 150 - 75;
+                const price = Math.round(basePrice + random + i * 8);
+                records.push({
+                    timestamp: date.toISOString(),
+                    lowest_price: Math.max(450, price),
+                    avg_price: Math.max(500, price + 30)
+                });
+            }
+            return {
+                route: { from: "上海", to: "太原" },
+                target_date: "2025-04-02",
+                records: records,
+                stats: { total_checks: records.length, last_check: records[records.length-1].timestamp }
+            };
+        }
+        
+        function updateStats(data) {
+            const records = data.records;
+            if (records.length === 0) return;
+            
+            const prices = records.map(r => r.lowest_price).filter(p => p);
+            const current = prices[prices.length - 1];
+            const lowest = Math.min(...prices);
+            const avg = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+            const prev = prices.length > 1 ? prices[prices.length - 2] : current;
+            const change = current - prev;
+            
+            document.getElementById('current-price').textContent = `¥${current}`;
+            document.getElementById('lowest-price').textContent = `¥${lowest}`;
+            document.getElementById('avg-price').textContent = `¥${avg}`;
+            document.getElementById('data-points').textContent = records.length;
+            
+            const changeEl = document.getElementById('price-change');
+            if (change > 0) {
+                changeEl.textContent = `↑ ${change}
