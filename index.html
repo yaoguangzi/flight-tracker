@@ -155,8 +155,14 @@ const DATA_URL='https://cdn.jsdelivr.net/gh/yaoguangzi/flight-tracker@main/data/
 let chartInstance=null;
 
 async function loadData(){
-  try{const r=await fetch(DATA_URL+'?t='+Date.now());if(!r.ok)throw new Error('fail');return await r.json()}
-  catch(e){return{records:[],stats:{}}}
+  try{
+    const r=await fetch(DATA_URL+'?_='+Date.now(),{cache:'no-cache'});
+    if(!r.ok)throw new Error('fail');
+    return await r.json();
+  }catch(e){
+    console.error('Load error:',e);
+    return{records:[],stats:{}};
+  }
 }
 
 function renderFlights(flights){
