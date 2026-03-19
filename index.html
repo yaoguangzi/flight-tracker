@@ -164,8 +164,13 @@ function renderChart(records) {
 }
 
 async function init() {
+  console.log('开始加载数据...');
   const data = await loadData();
-  if (!data || !data.records) return;
+  console.log('加载结果:', data);
+  if (!data || !data.records) {
+    document.getElementById('flight-list').innerHTML = '<div class="error">数据为空或格式错误</div>';
+    return;
+  }
   
   const records = data.records;
   const latest = records[records.length - 1];
