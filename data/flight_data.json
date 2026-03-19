@@ -5,15 +5,15 @@
     "to": "太原",
     "to_code": "TYN"
   },
-  "target_date": "2025-04-02",
+  "target_date": "2025-04-10",
   "records": [
     {
-      "timestamp": "2026-03-19T14:16:36.114838",
+      "timestamp": "2026-03-19T14:32:45.628633",
       "flights": [
         {
           "airline": "东方航空",
           "flight_no": "MU2401",
-          "price": 569,
+          "price": 547,
           "dep_time": "08:30",
           "arr_time": "11:15",
           "source": "demo"
@@ -21,7 +21,7 @@
         {
           "airline": "中国国航",
           "flight_no": "CA1234",
-          "price": 629,
+          "price": 607,
           "dep_time": "10:15",
           "arr_time": "13:00",
           "source": "demo"
@@ -29,52 +29,20 @@
         {
           "airline": "南方航空",
           "flight_no": "CZ5678",
-          "price": 669,
+          "price": 647,
           "dep_time": "14:20",
           "arr_time": "17:05",
           "source": "demo"
         }
       ],
-      "lowest_price": 569,
-      "highest_price": 669,
-      "avg_price": 622.0
-    },
-    {
-      "timestamp": "2026-03-19T14:30:08.437232",
-      "flights": [
-        {
-          "airline": "东方航空",
-          "flight_no": "MU2401",
-          "price": 535,
-          "dep_time": "08:30",
-          "arr_time": "11:15",
-          "source": "demo"
-        },
-        {
-          "airline": "中国国航",
-          "flight_no": "CA1234",
-          "price": 595,
-          "dep_time": "10:15",
-          "arr_time": "13:00",
-          "source": "demo"
-        },
-        {
-          "airline": "南方航空",
-          "flight_no": "CZ5678",
-          "price": 635,
-          "dep_time": "14:20",
-          "arr_time": "17:05",
-          "source": "demo"
-        }
-      ],
-      "lowest_price": 535,
-      "highest_price": 635,
-      "avg_price": 588.0
+      "lowest_price": 547,
+      "highest_price": 647,
+      "avg_price": 600.0
     }
   ],
   "stats": {
-    "total_checks": 2,
-    "first_check": "2026-03-19T14:16:36.114948",
-    "last_check": "2026-03-19T14:30:08.437281"
+    "total_checks": 1,
+    "first_check": "2026-03-19T14:32:45.628696",
+    "last_check": "2026-03-19T14:32:45.628689"
   }
 }
