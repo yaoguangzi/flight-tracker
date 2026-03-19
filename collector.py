@@ -13,7 +13,7 @@ import os
 
 CONFIG = {
     "route": {"from": "上海", "from_code": "SHA", "to": "太原", "to_code": "TYN"},
-    "target_date": "2025-04-02",
+    "target_date": "2025-04-10",
     "data_file": "data/flight_data.json",
     "repo_dir": "/Users/openclaw/.openclaw/workspace/flight-tracker"
 }
