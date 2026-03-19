@@ -7,194 +7,110 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            padding: 20px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #e0e0e0; padding: 20px; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; }
-        h1 { font-size: 24px; margin-bottom: 8px; color: #fff; }
-        .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #2a2a2a;
-        }
-        .stat-label {
-            font-size: 12px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-        .stat-value { font-size: 28px; font-weight: 600; color: #fff; }
-        .stat-change { font-size: 12px; margin-top: 4px; }
-        .positive { color: #4ade80; }
-        .negative { color: #f87171; }
-        .neutral { color: #888; }
-        .chart-container {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #2a2a2a;
-            margin-bottom: 24px;
-        }
-        .chart-title { font-size: 16px; margin-bottom: 16px; color: #fff; }
-        .insights {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #2a2a2a;
-        }
-        .insights h3 { font-size: 16px; margin-bottom: 16px; color: #fff; }
-        .insight-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #2a2a2a;
-        }
+        h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+        .subtitle { color: #8892b0; font-size: 14px; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-label { font-size: 12px; color: #8892b0; text-transform: uppercase; margin-bottom: 8px; }
+        .stat-value { font-size: 32px; font-weight: 700; color: #fff; }
+        .stat-change { font-size: 13px; margin-top: 6px; }
+        .positive { color: #4ade80; } .negative { color: #f87171; } .neutral { color: #64748b; }
+        .chart-container { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
+        .chart-title { font-size: 18px; margin-bottom: 20px; color: #fff; font-weight: 600; }
+        .insights { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.1); }
+        .insights h3 { font-size: 18px; margin-bottom: 20px; color: #fff; font-weight: 600; }
+        .insight-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .insight-item:last-child { border-bottom: none; }
-        .insight-icon {
-            width: 32px;
-            height: 32px;
-            background: #2a2a2a;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
+        .insight-icon { width: 40px; height: 40px; background: rgba(96,165,250,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .insight-text { flex: 1; }
-        .insight-title { font-weight: 500; color: #fff; margin-bottom: 4px; }
-        .insight-desc { font-size: 13px; color: #888; }
-        .last-update { text-align: right; font-size: 12px; color: #666; margin-top: 16px; }
+        .insight-title { font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .insight-desc { font-size: 14px; color: #8892b0; }
+        .last-update { text-align: right; font-size: 12px; color: #64748b; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>✈️ 上海 → 太原 机票价格趋势</h1>
         <div class="subtitle">目标日期: 2025-04-02 | 每2小时自动更新</div>
-        
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">当前最低价</div>
-                <div class="stat-value" id="current-price">--</div>
-                <div class="stat-change neutral" id="price-change">等待数据...</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">历史最低</div>
-                <div class="stat-value" id="lowest-price">--</div>
-                <div class="stat-change neutral">建议入手价</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">平均价格</div>
-                <div class="stat-value" id="avg-price">--</div>
-                <div class="stat-change neutral">基准参考</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">数据点</div>
-                <div class="stat-value" id="data-points">0</div>
-                <div class="stat-change neutral">持续更新</div>
-            </div>
+            <div class="stat-card"><div class="stat-label">当前最低价</div><div class="stat-value" id="current-price">--</div><div class="stat-change neutral" id="price-change">等待数据...</div></div>
+            <div class="stat-card"><div class="stat-label">历史最低</div><div class="stat-value" id="lowest-price">--</div><div class="stat-change neutral">建议入手价</div></div>
+            <div class="stat-card"><div class="stat-label">平均价格</div><div class="stat-value" id="avg-price">--</div><div class="stat-change neutral">基准参考</div></div>
+            <div class="stat-card"><div class="stat-label">数据点</div><div class="stat-value" id="data-points">0</div><div class="stat-change neutral">持续更新</div></div>
         </div>
-        
-        <div class="chart-container">
-            <div class="chart-title">📈 价格趋势</div>
-            <canvas id="priceChart"></canvas>
-        </div>
-        
+        <div class="chart-container"><div class="chart-title">📈 价格趋势</div><canvas id="priceChart"></canvas></div>
         <div class="insights">
             <h3>💡 购买建议</h3>
-            <div class="insight-item">
-                <div class="insight-icon">⏰</div>
-                <div class="insight-text">
-                    <div class="insight-title">最佳购买时机</div>
-                    <div class="insight-desc" id="best-time">数据累积中...</div>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon">📊</div>
-                <div class="insight-text">
-                    <div class="insight-title">价格波动规律</div>
-                    <div class="insight-desc" id="price-pattern">正在分析历史数据...</div>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon">🎯</div>
-                <div class="insight-text">
-                    <div class="insight-title">目标价格</div>
-                    <div class="insight-desc" id="target-price">建议设定价格提醒</div>
-                </div>
-            </div>
+            <div class="insight-item"><div class="insight-icon">⏰</div><div class="insight-text"><div class="insight-title">最佳购买时机</div><div class="insight-desc" id="best-time">数据累积中...</div></div></div>
+            <div class="insight-item"><div class="insight-icon">📊</div><div class="insight-text"><div class="insight-title">价格波动规律</div><div class="insight-desc" id="price-pattern">正在分析...</div></div></div>
+            <div class="insight-item"><div class="insight-icon">🎯</div><div class="insight-text"><div class="insight-title">目标价格</div><div class="insight-desc" id="target-price">建议低于均价10%时入手</div></div></div>
         </div>
-        
         <div class="last-update" id="last-update">最后更新: --</div>
     </div>
-
     <script>
-        // GitHub raw 数据源
-        const DATA_URL = 'https://raw.githubusercontent.com/openclaw-bot/flight-tracker/main/data/flight_data.json';
+        const DATA_URL = 'https://raw.githubusercontent.com/yaoguangzi/flight-tracker/main/data/flight_data.json';
+        let chartInstance = null;
         
         async function loadData() {
-            try {
-                const response = await fetch(DATA_URL);
-                if (!response.ok) throw new Error('Network error');
-                return await response.json();
-            } catch (e) {
-                console.log('使用模拟数据');
-                return generateMockData();
-            }
+            try { const res = await fetch(DATA_URL + '?t=' + Date.now()); if (!res.ok) throw new Error('fail'); return await res.json(); }
+            catch (e) { return generateMock(); }
         }
         
-        function generateMockData() {
+        function generateMock() {
             const records = [];
-            const basePrice = 600;
-            const now = new Date();
-            
-            for (let i = 14; i >= 0; i--) {
-                const date = new Date(now);
-                date.setDate(date.getDate() - i);
-                const random = Math.random() * 150 - 75;
-                const price = Math.round(basePrice + random + i * 8);
-                records.push({
-                    timestamp: date.toISOString(),
-                    lowest_price: Math.max(450, price),
-                    avg_price: Math.max(500, price + 30)
-                });
-            }
-            return {
-                route: { from: "上海", to: "太原" },
-                target_date: "2025-04-02",
-                records: records,
-                stats: { total_checks: records.length, last_check: records[records.length-1].timestamp }
-            };
+            for (let i = 7; i >= 0; i--) { const d = new Date(); d.setHours(d.getHours() - i * 2); records.push({ timestamp: d.toISOString(), lowest_price: 550 + Math.floor(Math.random() * 100), avg_price: 600 + Math.floor(Math.random() * 100) }); }
+            return { records, stats: { last_check: records[records.length-1].timestamp } };
         }
         
         function updateStats(data) {
-            const records = data.records;
-            if (records.length === 0) return;
-            
-            const prices = records.map(r => r.lowest_price).filter(p => p);
-            const current = prices[prices.length - 1];
+            const r = data.records || [];
+            if (!r.length) return;
+            const prices = r.map(x => x.lowest_price).filter(x => x);
+            const current = prices[prices.length-1];
             const lowest = Math.min(...prices);
-            const avg = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
-            const prev = prices.length > 1 ? prices[prices.length - 2] : current;
+            const avg = Math.round(prices.reduce((a,b)=>a+b,0)/prices.length);
+            const prev = prices.length > 1 ? prices[prices.length-2] : current;
             const change = current - prev;
             
-            document.getElementById('current-price').textContent = `¥${current}`;
-            document.getElementById('lowest-price').textContent = `¥${lowest}`;
-            document.getElementById('avg-price').textContent = `¥${avg}`;
-            document.getElementById('data-points').textContent = records.length;
+            document.getElementById('current-price').textContent = '¥' + current;
+            document.getElementById('lowest-price').textContent = '¥' + lowest;
+            document.getElementById('avg-price').textContent = '¥' + avg;
+            document.getElementById('data-points').textContent = r.length;
             
-            const changeEl = document.getElementById('price-change');
-            if (change > 0) {
-                changeEl.textContent = `↑ ${change}
+            const el = document.getElementById('price-change');
+            if (change > 0) { el.textContent = '↑ ' + change; el.className = 'stat-change negative'; }
+            else if (change < 0) { el.textContent = '↓ ' + Math.abs(change); el.className = 'stat-change positive'; }
+            else { el.textContent = '→ 持平'; el.className = 'stat-change neutral'; }
+            
+            if (current <= lowest * 1.05) document.getElementById('best-time').textContent = '当前接近历史最低，建议立即入手！';
+            else if (current <= avg) document.getElementById('best-time').textContent = '价格低于平均，可以考虑入手';
+            else document.getElementById('best-time').textContent = '价格偏高，建议继续观望';
+            
+            document.getElementById('price-pattern').textContent = prices.length > 3 ? `近${prices.length}次记录，价格波动${Math.round((Math.max(...prices)-Math.min(...prices))/Math.min(...prices)*100)}%` : '数据不足，继续观察中';
+            document.getElementById('target-price').textContent = `建议入手价: ¥${Math.round(avg * 0.9)} 以下`;
+            document.getElementById('last-update').textContent = '最后更新: ' + new Date(data.stats?.last_check || Date.now()).toLocaleString('zh-CN');
+            
+            drawChart(r);
+        }
+        
+        function drawChart(records) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            const labels = records.map(x => new Date(x.timestamp).toLocaleDateString('zh-CN', {month:'short', day:'numeric', hour:'2-digit'}));
+            const prices = records.map(x => x.lowest_price);
+            
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { labels: labels, datasets: [{ label: '最低价', data: prices, borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#60a5fa', tension: 0.4, fill: true }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#8892b0' } }, y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#8892b0', callback: v => '¥' + v } } } }
+            });
+        }
+        
+        async function init() { const data = await loadData(); updateStats(data); }
+        init();
+        setInterval(init, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
