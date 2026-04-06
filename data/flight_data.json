@@ -24966,11 +24966,43 @@
       "lowest_price": 526,
       "highest_price": 626,
       "avg_price": 579.0
+    },
+    {
+      "timestamp": "2026-04-07T02:44:01.044281",
+      "flights": [
+        {
+          "airline": "东方航空",
+          "flight_no": "MU2401",
+          "price": 540,
+          "dep_time": "08:30",
+          "arr_time": "11:15",
+          "source": "demo"
+        },
+        {
+          "airline": "中国国航",
+          "flight_no": "CA1234",
+          "price": 600,
+          "dep_time": "10:15",
+          "arr_time": "13:00",
+          "source": "demo"
+        },
+        {
+          "airline": "南方航空",
+          "flight_no": "CZ5678",
+          "price": 640,
+          "dep_time": "14:20",
+          "arr_time": "17:05",
+          "source": "demo"
+        }
+      ],
+      "lowest_price": 540,
+      "highest_price": 640,
+      "avg_price": 593.0
     }
   ],
   "stats": {
-    "total_checks": 780,
+    "total_checks": 781,
     "first_check": "2026-03-19T14:32:45.628696",
-    "last_check": "2026-04-07T02:03:18.736570"
+    "last_check": "2026-04-07T02:44:01.044366"
   }
 }
